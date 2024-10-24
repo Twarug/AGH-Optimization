@@ -20,7 +20,7 @@ void lab6();
 
 int main() {
   try {
-    lab0();
+    lab1();
   } catch (string EX_INFO) {
     cerr << "ERROR:\n";
     cerr << EX_INFO << endl << endl;
@@ -61,7 +61,20 @@ void lab0() {
   Y[1].~matrix();
 }
 
-void lab1() {}
+void lab1() {
+  srand(time(NULL));
+  double alpha = 1.5; // TODO
+  matrix lb(2, 1, -5), ub(2, 1, 5);
+
+  double epsilon = 0.00001; // TODO
+
+  double range[2] = {-100.0, 100.0};
+
+  solution f = fib(ff1T, range[0], range[1], epsilon, lb, ub);
+  cout << "fibonacci: " << f.x << "\n";
+
+  solution::clear_calls();
+}
 
 void lab2() {}
 

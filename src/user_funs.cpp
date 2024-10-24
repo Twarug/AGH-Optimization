@@ -29,3 +29,10 @@ matrix df0(double t, matrix Y, matrix ud1, matrix ud2) {
   dY(1) = ((t <= ud2(1)) * ud2(0) - m * g * l * sin(Y(0)) - b * Y(1)) / I;
   return dY;
 }
+
+matrix ff1T(matrix x, matrix ud1, matrix ud2) {
+  matrix y;
+  y = -std::cos(.1 * x()) * std::exp(-std::pow(.1 * x() - 2 * M_PI, 2)) +
+      .002 * std::pow(.1 * x(), 2);
+  return y;
+}

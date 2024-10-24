@@ -40,8 +40,76 @@ solution fib(matrix (*ff)(matrix, matrix, matrix), double a, double b,
              double epsilon, matrix ud1, matrix ud2) {
   try {
     solution Xopt;
-    // Tu wpisz kod funkcji
 
+    int k = 1;
+    matrix fi = matrix(0);
+    fi.add_row(1);
+
+    while (fi(k - 1) < (b - a) / epsilon) {
+      k++;
+      fi.add_row(fi(k - 1) + fi(k - 2));
+    }
+
+    double **M = new double *[1];
+    M[0] = new double[2];
+
+    M[0][0] = a;
+    M[0][1] = 0;
+    matrix temp = matrix(1, 2, M);
+    solution A = solution(temp);
+
+    M[0][0] = b;
+    M[0][1] = 0;
+    temp = matrix(1, 2, M);
+    solution B = solution(temp);
+
+    M[0][0] = A.x(0, 0) + (fi(k - 2) / fi(k)) * (B.x(0, 0) - A.x(0, 0));
+    M[0][1] = 0;
+    temp = matrix(1, 2, M);
+    solution C = solution(temp);
+
+    M[0][0] = A.x(0, 0) + (fi(k - 1) / fi(k)) * (B.x(0, 0) - A.x(0, 0));
+    M[0][1] = 0;
+    temp = matrix(1, 2, M);
+    solution D = solution(temp);
+
+    delete M;
+
+    double **L = new double *[1];
+    L[0] = new double[4];
+    L[0][0] = A.x(0, 1);
+    L[0][1] = B.x(0, 1);
+    L[0][2] = solution::f_calls;
+    L[0][3] = 0;
+
+    matrix log_matrix = matrix(1, 4, L);
+    matrix t_log_matrix;
+
+    for (int i = 0; i < k - 3; i++) {
+      if (C.fit_fun(ff, ud1, ud2)(0, 0) < D.fit_fun(ff, ud1, ud2)(0, 0)) {
+        A.x(0, 1) = A.x(0, 0);
+        B.x(0, 1) = D.x(0, 0);
+      } else {
+        B.x(0, 1) = B.x(0, 0);
+        A.x(0, 1) = C.x(0, 0);
+      }
+      C.x(0, 1) =
+          B.x(0, 1) - fi(k - i - 2) / fi(k - i - 1) * (B.x(0, 1) - A.x(0, 1));
+      D.x(0, 1) = A.x(0, 1) + B.x(0, 1) - C.x(0, 1);
+
+      L[0][0] = A.x(0, 1);
+      L[0][1] = B.x(0, 1);
+      L[0][2] = solution::f_calls;
+      L[0][3] = D.x(0, 1);
+      t_log_matrix = matrix(1, 4, L);
+      log_matrix.add_row(t_log_matrix);
+    }
+
+    ofstream Sout("../output/fibonacci.csv");
+    Sout << log_matrix;
+    Sout.close();
+
+    Xopt.x = C.x(0, 1);
     return Xopt;
   } catch (string ex_info) {
     throw("solution fib(...):\n" + ex_info);
