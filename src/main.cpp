@@ -21,68 +21,71 @@ void lab5();
 void lab6();
 
 int main() {
-  try {
-    // lab0();
-    lab1();
-  } catch (string EX_INFO) {
-    cerr << "ERROR:\n";
-    cerr << EX_INFO << endl << endl;
-  }
-  system("pause");
-  return 0;
+    try {
+        // lab0();
+        lab1();
+    } catch (string EX_INFO) {
+        cerr << "ERROR:\n";
+        cerr << EX_INFO << endl
+             << endl;
+    }
+    system("pause");
+    return 0;
 }
 
 void lab0() {
-  // Funkcja testowa
-  double epsilon = 1e-2;
-  int Nmax = 10000;
-  matrix lb(2, 1, -5), ub(2, 1, 5), a(2, 1);
-  solution opt;
-  a(0) = -1;
-  a(1) = 2;
-  opt = MC(ff0T, 2, lb, ub, epsilon, Nmax, a);
-  cout << opt << endl << endl;
-  solution::clear_calls();
+    // Funkcja testowa
+    double epsilon = 1e-2;
+    int Nmax = 10000;
+    matrix lb(2, 1, -5), ub(2, 1, 5), a(2, 1);
+    solution opt;
+    a(0) = -1;
+    a(1) = 2;
+    opt = MC(ff0T, 2, lb, ub, epsilon, Nmax, a);
+    cout << opt << endl
+         << endl;
+    solution::clear_calls();
 
-  // Wahadlo
-  Nmax = 1000;
-  epsilon = 1e-2;
-  lb = 0;
-  ub = 5;
-  double teta_opt = 1;
-  opt = MC(ff0R, 1, lb, ub, epsilon, Nmax, teta_opt);
-  cout << opt << endl << endl;
-  solution::clear_calls();
+    // Wahadlo
+    Nmax = 1000;
+    epsilon = 1e-2;
+    lb = 0;
+    ub = 5;
+    double teta_opt = 1;
+    opt = MC(ff0R, 1, lb, ub, epsilon, Nmax, teta_opt);
+    cout << opt << endl
+         << endl;
+    solution::clear_calls();
 
-  // Zapis symulacji do pliku csv
-  matrix Y0 = matrix(2, 1), MT = matrix(2, new double[2]{m2d(opt.x), 0.5});
-  matrix *Y = solve_ode(df0, 0, 0.1, 10, Y0, NAN, MT);
-  ofstream Sout("symulacja_lab0.csv");
-  Sout << hcat(Y[0], Y[1]);
-  Sout.close();
-  Y[0].~matrix();
-  Y[1].~matrix();
+    // Zapis symulacji do pliku csv
+    matrix Y0 = matrix(2, 1), MT = matrix(2, new double[2]{m2d(opt.x), 0.5});
+    matrix *Y = solve_ode(df0, 0, 0.1, 10, Y0, NAN, MT);
+    ofstream Sout("symulacja_lab0.csv");
+    Sout << hcat(Y[0], Y[1]);
+    Sout.close();
+    Y[0].~matrix();
+    Y[1].~matrix();
 }
 
-void lab1()
-{
-  double* x = expansion(ff1T, -100, 200, 1e-4, 10000);
+void lab1() {
+    double *x = expansion(ff1T, -100, 200, 1e-4, 10000);
 
-  std::println("Expansion:  a: {}, b: {}", x[0], x[1]);
+    std::println("Expansion:  a: {}, b: {}", x[0], x[1]);
 
+    srand(time(NULL));
+    double alpha = 1.5; // TODO
+    matrix lb(2, 1, -5), ub(2, 1, 5);
 
-  srand(time(NULL));
-  double alpha = 1.5; // TODO
-  matrix lb(2, 1, -5), ub(2, 1, 5);
+    double epsilon = 0.00001; // TODO
 
-  double epsilon = 0.00001; // TODO
+    double range[2] = {-100.0, 100.0};
 
-  double range[2] = {-100.0, 100.0};
+    solution f = fib(ff1T, range[0], range[1], epsilon, lb, ub);
+    cout << "fibonacci: " << f.x << "\n";
 
-  solution f = fib(ff1T, range[0], range[1], epsilon, lb, ub);
-  cout << "fibonacci: " << f.x << "\n";
+    solution l = lag(ff1T, range[0], range[1], epsilon, alpha, 10000, lb, ub);
 
-  solution::clear_calls();
+    solution::clear_calls();
 }
 
 void lab2() {}
