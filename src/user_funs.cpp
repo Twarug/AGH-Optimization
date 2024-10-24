@@ -1,5 +1,7 @@
 #include "user_funs.h"
 
+constexpr double PI = 3.14159265358979323846;
+
 matrix ff0T(matrix x, matrix ud1, matrix ud2) {
   matrix y;
   y = pow(x(0) - ud1(0), 2) + pow(x(1) - ud1(1), 2);
