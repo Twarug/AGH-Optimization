@@ -26,13 +26,62 @@ solution MC(matrix (*ff)(matrix, matrix, matrix), int N, matrix lb, matrix ub,
 
 double *expansion(matrix (*ff)(matrix, matrix, matrix), double x0, double d,
                   double alpha, int Nmax, matrix ud1, matrix ud2) {
-  try {
-    double *p = new double[2]{0, 0};
-    // Tu wpisz kod funkcji
+  try
+  {
+    double* p = new double[2]{ 0,0 };
 
+    double x1 = x0 + d;
+
+
+    double fx0 = ff(x0, NAN, NAN)();
+    double fx1 = ff(x1, NAN, NAN)();
+
+    if (fx1 == fx0) {
+      p[0] = x0;
+      p[1] = x1;
+      return p;
+    }
+
+    if (fx0 <= fx1) {
+      d *= -1;
+      x1 = x0 + d;
+      if (ff(x1, NAN, NAN)() >= fx0) {
+        p[0] = x1;
+        p[1] = x0 - d;
+        return p;
+      }
+    }
+
+    double x2;
+    int i = 0;
+    while (true) {
+      if (i++ > Nmax)
+        throw std::string("Iteration limit reached");
+
+      x2 = x0 + std::pow(alpha, i) * d;
+      double fx2 = ff(x2, NAN, NAN)();
+      if (fx2 >= fx1) {
+        break;
+      }
+
+      x0 = x1;
+      x1 = x2;
+      fx1 = fx2;
+    }
+
+    if (d > 0) {
+      p[0] = x0;
+      p[1] = x2;
+      return p;
+    }
+
+    p[0] = x2;
+    p[1] = x0;
     return p;
-  } catch (string ex_info) {
-    throw("double* expansion(...):\n" + ex_info);
+  }
+  catch (string ex_info)
+  {
+    throw ("double* expansion(...):\n" + ex_info);
   }
 }
 

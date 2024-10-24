@@ -10,6 +10,8 @@ Data ostatniej modyfikacji: 19.09.2023
 
 #include "opt_alg.h"
 
+#include <print>
+
 void lab0();
 void lab1();
 void lab2();
@@ -20,6 +22,7 @@ void lab6();
 
 int main() {
   try {
+    // lab0();
     lab1();
   } catch (string EX_INFO) {
     cerr << "ERROR:\n";
@@ -61,7 +64,13 @@ void lab0() {
   Y[1].~matrix();
 }
 
-void lab1() {
+void lab1()
+{
+  double* x = expansion(ff1T, -100, 200, 1e-4, 10000);
+
+  std::println("Expansion:  a: {}, b: {}", x[0], x[1]);
+
+
   srand(time(NULL));
   double alpha = 1.5; // TODO
   matrix lb(2, 1, -5), ub(2, 1, 5);
